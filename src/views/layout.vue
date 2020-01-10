@@ -3,7 +3,7 @@
 		<el-container style="position: absolute;left: 0;top: 0;bottom: 0;right: 0;overflow: hidden;">
 			<!-- 头部布局 -->
 			<el-header class="d-flex align-items-center" style="background-color:#545c64">
-				<a class="h5 mb-0 text-light mr-auto">UNI-ADMIN</a>
+				<a class="h5 mb-0 text-light mr-auto">{{$conf.logo}}</a>
 				<el-menu :default-active="navBar.active" mode="horizontal" @select="handleSelect" background-color="#545c64"
 				 text-color="#fff" active-text-color="#ffd04b">
 					<el-menu-item v-for="(item,index) in navBar.list" :index="index | numToString" :key="index">{{item.name}}</el-menu-item>
