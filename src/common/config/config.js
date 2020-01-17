@@ -11,6 +11,10 @@ export default {
 					pathname:"index"
 				}, {
 					icon: "el-icon-s-claim",
+					name: "相册管理",
+					pathname:"image"
+				}, {
+					icon: "el-icon-s-claim",
 					name: "商品列表",
 					pathname:"shop_goods_list"
 				}]
