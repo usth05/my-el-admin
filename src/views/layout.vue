@@ -141,7 +141,6 @@
 			},
 			sliderSelect(key, keyPath) {
 				this.slideMenuActive = key;
-				console.log(this.slideMenus[key]);
 				// 跳转到指定页面
 				this.$router.push({
 					name: this.slideMenus[key].pathname
