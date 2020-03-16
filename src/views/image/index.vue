@@ -32,6 +32,7 @@
 								<el-card class="box-card mb-3 position-relative" shadow="hover" style="cursor: pointer;" :body-style="{'padding':'0'}">
 									<div class="border" :class="{'border-danger':item.isCheck}">
 										<span v-if="item.isCheck" class="badge badge-danger" style="position: absolute;right: 0;top: 0;">{{item.checkOrder}}</span>
+										<!-- <img @click="choose(item)" :src="item.url" class="w-100" style="height: 100px;"> -->
 										<img @click="choose(item)" src="../../assets/demo/datapic/3.jpg" class="w-100" style="height: 100px;">
 										<div class="w-100 text-white position-absolute px-1" style="background-color: rgba(0,0,0,.5);margin-top: -25px;">
 											<span class="small">{{item.name}}</span>
