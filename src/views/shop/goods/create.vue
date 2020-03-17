@@ -8,41 +8,41 @@
 			<el-tab-pane label="基础设置">
 				<el-form ref="form" label-width="80px">
 					<el-form-item label="商品名称">
-						<el-input v-model="form.title" class="w-50" placeholder="请输入商品名称,不能超过60个字符"></el-input>
+						<el-input v-model="title" class="w-50" placeholder="请输入商品名称,不能超过60个字符"></el-input>
 					</el-form-item>
 					<el-form-item label="商品分类">
-						<el-cascader v-model="form.category" :options="options"></el-cascader>
+						<el-cascader v-model="category" :options="options"></el-cascader>
 					</el-form-item>
 					<el-form-item label="商品描述">
-						<el-input type="textarea" v-model="form.desc" class="w-50" placeholder="请输入商品名称,不能超过60个字符"></el-input>
+						<el-input type="textarea" v-model="desc" class="w-50" placeholder="请输入商品名称,不能超过60个字符"></el-input>
 					</el-form-item>
 					<el-form-item label="商品单位">
-						<el-input v-model="form.unit" class="w-50" placeholder="请输入商品单位"></el-input>
+						<el-input v-model="unit" class="w-50" placeholder="请输入商品单位"></el-input>
 					</el-form-item>
 					<el-form-item label="总库存">
-						<el-input type="number" v-model="form.stock" class="w-25" placeholder="请输入商品库存">
+						<el-input type="number" v-model="stock" class="w-25" placeholder="请输入商品库存">
 							<template slot="append">件</template>
 						</el-input>
 					</el-form-item>
 					<el-form-item label="库存预警">
-						<el-input type="number" v-model="form.min_stock" class="w-25" placeholder="请输入商品单位">
+						<el-input type="number" v-model="min_stock" class="w-25" placeholder="请输入商品单位">
 							<template slot="append">件</template>
 						</el-input>
 					</el-form-item>
 					<el-form-item label="库存显示">
-						<el-radio-group v-model="form.display_stock">
+						<el-radio-group v-model="display_stock">
 							<el-radio :label="1" border>是</el-radio>
 							<el-radio :label="0" border>否</el-radio>
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item label="是否上架">
-						<el-radio-group v-model="form.status">
+						<el-radio-group v-model="status">
 							<el-radio :label="0" border>放入仓库</el-radio>
 							<el-radio :label="1" border>立即上架</el-radio>
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item label="运费模板">
-						<el-select v-model="form.express"
+						<el-select v-model="express"
 						placeholder="请选择运费模板">
 							<el-option label="区域一" value="shanghai"></el-option>
 							<el-option label="区域二" value="beijing"></el-option>
@@ -59,42 +59,79 @@
 							<el-radio-button :label="1">多规格</el-radio-button>
 						</el-radio-group>
 					</el-form-item>
-					<el-form-item label="添加规格">
-						<div class="card" style="line-height: 1.2;">
-							<div class="card-header d-flex align-items-center">
-								规格项：
-								<el-input size="mini" style="width: 200px;">
-									<el-button slot="append"
-									icon="el-icon-more"></el-button>
+				</el-form>
+				<!-- 单规格 -->
+				<el-form ref="form" label-width="80px">
+					<template v-if="sku_type===0">
+						<el-form ref="form" label-width="80px">
+							<el-form-item label="市场价格">
+								<el-input type="number" v-model="stock" class="w-25" placeholder="请输入商品的市场价格">
+									<template slot="append">元</template>
 								</el-input>
-								<el-radio-group size="mini" class="ml-2" style="margin-bottom: -10px;">
-									<el-radio label="无"></el-radio>
-									<el-radio label="颜色"></el-radio>
-									<el-radio label="图片"></el-radio>
-								</el-radio-group>
-								<el-button size="mini" class="ml-auto" icon="el-icon-top"></el-button>
-								<el-button size="mini" icon="el-icon-bottom"></el-button>
-								<el-button size="mini" type="text">删除</el-button>
-							</div>
-							<div class="card-body">
-								<div>
-									<el-button type="text" size="mini" icon="el-icon-plus">增加规格</el-button>
+							</el-form-item> 
+							<el-form-item label="销售价格">
+								<el-input type="number" v-model="stock" class="w-25" placeholder="请输入商品的市场价格">
+									<template slot="append">元</template>
+								</el-input>
+							</el-form-item>
+							<el-form-item label="成本价格">
+								<el-input type="number" v-model="stock" class="w-25" placeholder="请输入商品的市场价格">
+									<template slot="append">元</template>
+								</el-input>
+							</el-form-item>
+							<el-form-item label="商品重量">
+								<el-input type="number" v-model="stock" class="w-25" placeholder="请输入商品的市场价格">
+									<template slot="append">公斤</template>
+								</el-input>
+							</el-form-item>
+							<el-form-item label="商品体积">
+								<el-input type="number" v-model="stock" class="w-25" placeholder="请输入商品的市场价格">
+									<template slot="append">立方米</template>
+								</el-input>
+							</el-form-item>
+						</el-form>
+					</template>
+					<template v-else>
+						<!-- 多规格 -->
+						<el-form ref="form" :model="form" label-width="80px">
+							<el-form-item label="添加规格">
+								<div class="card" style="line-height: 1.2;">
+									<div class="card-header d-flex align-items-center">
+										规格项：
+										<el-input size="mini" style="width: 200px;">
+											<el-button slot="append"
+											icon="el-icon-more"></el-button>
+										</el-input>
+										<el-radio-group size="mini" class="ml-2" style="margin-bottom: -10px;">
+											<el-radio label="无"></el-radio>
+											<el-radio label="颜色"></el-radio>
+											<el-radio label="图片"></el-radio>
+										</el-radio-group>
+										<el-button size="mini" class="ml-auto" icon="el-icon-top"></el-button>
+										<el-button size="mini" icon="el-icon-bottom"></el-button>
+										<el-button size="mini" type="text">删除</el-button>
+									</div>
+									<div class="card-body">
+										<div>
+											<el-button type="text" size="mini" icon="el-icon-plus">增加规格</el-button>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-						<el-button class="mt-3" type="success" size="mini">添加规格</el-button>
-					</el-form-item>
-					<el-form-item label="批量设置">
-						<el-button type="text">销售价</el-button>
-						<el-button type="text">市场价</el-button>
-						<el-button type="text">成本价</el-button>
-						<el-button type="text">库存</el-button>
-						<el-button type="text">体积</el-button>
-						<el-button type="text">重量</el-button>
-					</el-form-item>
-					<el-form-item label="规格设置">
-						规格设置
-					</el-form-item>
+								<el-button class="mt-3" type="success" size="mini">添加规格</el-button>
+							</el-form-item>
+							<el-form-item label="批量设置">
+								<el-button type="text">销售价</el-button>
+								<el-button type="text">市场价</el-button>
+								<el-button type="text">成本价</el-button>
+								<el-button type="text">库存</el-button>
+								<el-button type="text">体积</el-button>
+								<el-button type="text">重量</el-button>
+							</el-form-item>
+							<el-form-item label="规格设置">
+								规格设置
+							</el-form-item>
+						</el-form>
+					</template>
 				</el-form>
 			</el-tab-pane>
 			<el-tab-pane label="商品属性">商品属性</el-tab-pane>
@@ -107,22 +144,11 @@
 </template>
 
 <script>
+	import {mapState} from 'vuex'
 	export default {
 		data() {
 			return {
 				tabIndex: 0,
-				sku_type:0,//0：单规格 1：多规格
-				form: {
-					title: "",
-					category: [],
-					desc:"",
-					unit:"",
-					stock:0,
-					min_stock:0,
-					display_stock:0,
-					status:0,
-					express:"",
-				},
 				options: [{
 					value: 'zhinan',
 					label: '指南',
@@ -319,6 +345,20 @@
 					}]
 				}]
 			}
+		},
+		computed: {
+			...mapState({
+				sku_type:state=>state.goods_create.sku_type,//0：单规格 1：多规格
+				title: state=>state.goods_create.title,
+				category: state=>state.goods_create.category,
+				desc:state=>state.goods_create.desc,
+				unit:state=>state.goods_create.unit,
+				stock:state=>state.goods_create.stock,
+				min_stock:state=>state.goods_create.min_stock,
+				display_stock:state=>state.goods_create.display_stock,
+				status:state=>state.goods_create.status,
+				express:state=>state.goods_create.express,
+			})
 		},
 		methods: {
 			handleClick() {
