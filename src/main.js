@@ -4,11 +4,14 @@ import './plugins/element.js'
 import router from './router.js'
 import store from './store/index.js';
 // 引入全局配置文件
-import $conf from './common/config/config.js' 
+import $conf from './common/config/config.js'
+import VueDND from 'awe-dnd'
+Vue.use(VueDND)
+
 Vue.config.productionTip = false
 Vue.prototype.$conf = $conf
 new Vue({
-	router,	
+	router,
 	store,
 	render: h => h(App),
 }).$mount('#app')
