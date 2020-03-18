@@ -5,7 +5,7 @@
 			<el-color-picker size="mini" v-if="type === 1"></el-color-picker>
 			<!-- 图片选择器 -->
 			<template v-else>
-				<span class="btn btn-light border">
+				<span @click="chooseImage" class="btn btn-light border">
 					<i class="el-icon-plus"></i>
 				</span>
 			</template>
@@ -33,6 +33,7 @@
 			index:Number,
 			cardIndex:Number
 		},
+		inject:['app'],
 		methods:{
 			...mapMutations(['delSkuValue','upDataSkuValue']),
 			inputChange(e){
@@ -45,6 +46,10 @@
 					key,
 					value
 				})
+			},
+			// 选择图片
+			chooseImage(){
+				this.app.show();
 			}
 		}
 	}

@@ -15,17 +15,35 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr v-for="(item,index) in tableData" :key="index">
+			<tr v-for="(item,index) in list" :key="index">
 				<!-- 商品规格 -->
 				<th class="text-center" style="vertical-align: middle;" scope="row" v-for="(sku,skuI) in item.skus" :key="skuI">{{sku.name}}</th>
-				<td class="text-center" style="vertical-align: middle;">{{item.image}}</td>
-				<td class="text-center" style="vertical-align: middle;">{{item.oprice}}</td>
-				<td class="text-center" style="vertical-align: middle;">{{item.pprice}}</td>
-				<td class="text-center" style="vertical-align: middle;">{{item.cprice}}</td>
-				<td class="text-center" style="vertical-align: middle;">{{item.stock}}</td>
-				<td class="text-center" style="vertical-align: middle;">{{item.weight}}</td>
-				<td class="text-center" style="vertical-align: middle;">{{item.volume}}</td>
-				<td class="text-center" style="vertical-align: middle;">{{item.code}}</td>
+				<td class="text-center" width="100">
+					<span class="btn btn-light border">
+						<i class="el-icon-plus"></i>
+					</span>	
+				</td>
+				<td class="text-center" width="100">
+					<input type="number" class="form-control" v-model="item.oprice">
+				</td>
+				<td class="text-center" width="100">
+					<input type="number" class="form-control" v-model="item.pprice">
+				</td>
+				<td class="text-center" width="100">
+					<input type="number" class="form-control" v-model="item.cprice">
+				</td>
+				<td class="text-center" width="100">
+					<input type="number" class="form-control" v-model="item.stock">
+				</td>
+				<td class="text-center" width="100">
+					<input type="number" class="form-control" v-model="item.weight">
+				</td>
+				<td class="text-center" width="100">
+					<input type="number" class="form-control" v-model="item.volume">
+				</td>
+				<td class="text-center" width="100">
+					<input type="text" class="form-control" v-model="item.code">
+				</td>
 			</tr>
 		</tbody>
 	</table>
@@ -34,14 +52,24 @@
 <script>
 	import {mapGetters,mapState} from 'vuex'
 	export default {
+		data(){
+			return {
+				list:[]
+			}
+		},
 		computed: {
 			...mapGetters(['tableThs','tableData','skuLables']),
 			...mapState({
 				sku_card: state => state.goods_create.sku_card
 			}),
 		},
+		watch:{
+			tableData(newValue,oldValue){
+				this.list = newValue;
+			}
+		},
 		mounted() {
-			console.log(this.tableData)
+			this.list = this.tableData;
 		}
 	}
 </script>
