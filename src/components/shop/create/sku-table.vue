@@ -8,8 +8,8 @@
 				</th>
 			</tr>
 			<tr>
-				<th scope="col" class="text-center" style="vertical-align: middle;" v-for="(th,thi) in skuLables" :key="thi" rowspan="1"
-				 colspan="1">
+				<th scope="col" class="text-center" style="vertical-align: middle;" v-for="(th,thi) in skuLables" :key="thi"
+				 rowspan="1" colspan="1">
 					{{th.name}}
 				</th>
 			</tr>
@@ -19,9 +19,11 @@
 				<!-- 商品规格 -->
 				<th class="text-center" style="vertical-align: middle;" scope="row" v-for="(sku,skuI) in item.skus" :key="skuI">{{sku.name}}</th>
 				<td class="text-center" width="100">
-					<span class="btn btn-light border">
+					<span v-if="!item.image" @click="chooseImage(item)" class="btn btn-light border">
 						<i class="el-icon-plus"></i>
-					</span>	
+					</span>
+					<img v-else :src="item.image" class="rounded" @click="chooseImage(item)" style="width: 45px;height: 45px;cursor: pointer;"
+					 alt="">
 				</td>
 				<td class="text-center" width="100">
 					<input type="number" class="form-control" v-model="item.oprice">
@@ -50,26 +52,37 @@
 </template>
 
 <script>
-	import {mapGetters,mapState} from 'vuex'
+	import {
+		mapGetters,
+		mapState
+	} from 'vuex'
 	export default {
-		data(){
+		data() {
 			return {
-				list:[]
+				list: []
 			}
 		},
+		inject: ['app'],
 		computed: {
-			...mapGetters(['tableThs','tableData','skuLables']),
+			...mapGetters(['tableThs', 'tableData', 'skuLables']),
 			...mapState({
 				sku_card: state => state.goods_create.sku_card
 			}),
 		},
-		watch:{
-			tableData(newValue,oldValue){
+		watch: {
+			tableData(newValue, oldValue) {
 				this.list = newValue;
 			}
 		},
 		mounted() {
 			this.list = this.tableData;
+		},
+		methods: {
+			chooseImage(item) {
+				this.app.chooseImage((res) => {
+					item.image = res[0].url;
+				},1)
+			}
 		}
 	}
 </script>

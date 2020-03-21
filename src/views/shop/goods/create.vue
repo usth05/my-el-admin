@@ -50,29 +50,39 @@
 			</el-tab-pane>
 			<el-tab-pane label="商品属性">商品属性</el-tab-pane>
 			<el-tab-pane label="媒体设置">媒体设置</el-tab-pane>
-			<el-tab-pane label="商品详情">商品详情</el-tab-pane>
+			<el-tab-pane label="商品详情">
+				<!-- 富文本编辑器 -->
+				<tinymce ref="editor" v-model="msg" :disabled="disabled" @onclick="onclick" />
+			</el-tab-pane>
 			<el-tab-pane label="折扣设置">折扣设置</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
 
 <script>
-	import {mapState,mapMutations} from 'vuex'
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex'
 	import baseCreate from '@/components/shop/create/base-create.vue'
 	import singleAttrs from '@/components/shop/create/single-attrs.vue'
 	import skuCard from '@/components/shop/create/sku/sku-card.vue'
 	import skuTable from '@/components/shop/create/sku-table.vue';
+	import tinymce from '@/components/common/tinymce.vue';
 	export default {
 		data() {
 			return {
 				tabIndex: 0,
+				msg: "",
+				disabled: false
 			}
 		},
 		components: {
 			baseCreate,
 			singleAttrs,
 			skuCard,
-			skuTable
+			skuTable,
+			tinymce
 		},
 		computed: {
 			...mapState({
@@ -84,7 +94,6 @@
 				return this.sku_card.length;
 			}
 		},
-
 		methods: {
 			...mapMutations(['addSkuCard', 'vModelState']),
 			// 修改表单的值
@@ -93,6 +102,10 @@
 					key,
 					value
 				})
+			},
+			onclick(e, editor) {
+				console.log(e)
+				console.log(editor)
 			},
 			handleClick() {
 

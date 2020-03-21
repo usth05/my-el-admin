@@ -99,7 +99,7 @@ export default {
 			return arr.map(v=>{
 				let obj = {
 					skus:[],
-					image:"SKU图片", //sku图片
+					image:"", //sku图片
 					oprice: 0, //市场价格
 					pprice: 0, //销售价格
 					cprice: 0, //成本价格

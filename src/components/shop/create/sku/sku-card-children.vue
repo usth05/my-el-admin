@@ -5,9 +5,10 @@
 			<el-color-picker size="mini" v-if="type === 1"></el-color-picker>
 			<!-- 图片选择器 -->
 			<template v-else>
-				<span @click="chooseImage" class="btn btn-light border">
+				<span v-if="!item.image" @click="chooseImage" class="btn btn-light border">
 					<i class="el-icon-plus"></i>
 				</span>
+				<img v-else :src="item.image" class="rounded" @click="chooseImage" style="width: 45px;height: 45px;cursor: pointer;" alt="">
 			</template>
 			
 		</div>
@@ -49,7 +50,10 @@
 			},
 			// 选择图片
 			chooseImage(){
-				this.app.show();
+				this.app.chooseImage((res)=>{
+					console.log();
+					this.vModel('image',res[0].url);
+				},1);
 			}
 		}
 	}

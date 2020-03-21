@@ -30,6 +30,12 @@ export default {
 			},
 			{
 				name: '订单',
+				subActive: '0',
+				submenu: [{
+					icon: "el-icon-s-claim",
+					name: "发票管理",
+					pathname:"order_invoice_list"
+				}]
 				
 			},
 			{

@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<el-container style="position: absolute;top: 55px;right: 0;left: 0;bottom: 0;">
+	<el-dialog title="图片管理" :visible.sync="imageModel" width="80%" top="5vh">
+		<el-container style="height: 70vh;position: relative; margin: -30px -20px;">
 			<el-header class="d-flex align-items-center border-bottom">
 				<!-- 头部 -->
 				<div class="d-flex mr-auto">
@@ -12,16 +12,13 @@
 					<el-button type="success" size="medium">搜索</el-button>
 				</div>
 				<el-button type="warning" size="mini" @click="unChoose({all:true})" v-if="chooseList.length">取消选中</el-button>
-				<el-button type="danger" size="mini" @click="imageDel({all:true})" v-if="chooseList.length">批量删除</el-button>
-				<el-button type="success" size="medium" @click="openAlbumModel()">创建相册</el-button>
-				<el-button type="warning" size="medium" @click="uploadModel = true">上传图片</el-button>
 			</el-header>
 			<el-container>
 				<el-aside width="200px" class="bg-white border-right" style="position: absolute;top: 60px;left: 0;bottom: 60px;background-color: #FFFFFF;">
 					<!-- 侧边 | 相册列表-->
 					<ul class="list-group list-group-flush">
 						<album-item :item="item" :index="index" :active="albumIndex===index" v-for="(item,index) in albums" :key="index"
-						 @change="albumsChange" @edit="openAlbumModel" @del="alibumDel"></album-item>
+						 @change="albumsChange" :showOptions="false"></album-item>
 					</ul>
 				</el-aside>
 				<el-container>
@@ -32,14 +29,13 @@
 								<el-card class="box-card mb-3 position-relative" shadow="hover" style="cursor: pointer;" :body-style="{'padding':'0'}">
 									<div class="border" :class="{'border-danger':item.isCheck}">
 										<span v-if="item.isCheck" class="badge badge-danger" style="position: absolute;right: 0;top: 0;">{{item.checkOrder}}</span>
-										<!-- <img @click="choose(item)" :src="item.url" class="w-100" style="height: 100px;"> -->
-										<img @click="choose(item)" src="../../assets/demo/datapic/3.jpg" class="w-100" style="height: 100px;">
+										<img @click="choose(item)" :src="item.url" class="w-100" style="height: 100px;">
+										<!-- <img @click="choose(item)" src="../../assets/demo/1.jpg" class="w-100" style="height: 100px;"> -->
 										<div class="w-100 text-white position-absolute px-1" style="background-color: rgba(0,0,0,.5);margin-top: -25px;">
 											<span class="small">{{item.name}}</span>
 										</div>
 										<div class="p-2 text-center">
 											<el-button-group>
-												<el-button icon="el-icon-view" size="mini" class="p-2" @click="previewImage(item)"></el-button>
 												<el-button icon="el-icon-edit" size="mini" class="p-2" @click="editImage(item,index)"></el-button>
 												<el-button icon="el-icon-delete" size="mini" class="p-2" @click="imageDel({index})"></el-button>
 											</el-button-group>
@@ -66,73 +62,38 @@
 				</div>
 			</el-footer>
 		</el-container>
-
-		<!-- 修改|创建相册 -->
-		<el-dialog :title="albumModelTitle" :visible.sync="albumModel">
-			<el-form ref="form" :model="albumForm" label-width="80px">
-				<el-form-item label="相册名称">
-					<el-input v-model="albumForm.name" size="medium" placeholder="请输入相册名称"></el-input>
-				</el-form-item>
-				<el-form-item label="相册排序">
-					<el-input-number v-model="albumForm.order" :min="0"></el-input-number>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="albumModel = false">取 消</el-button>
-				<el-button type="primary" @click="confirmAlbumModel()">确 定</el-button>
-			</div>
-		</el-dialog>
-		<!-- 上传图片 -->
-		<el-dialog title="上传图片" :visible.sync="uploadModel">
-			<div class="text-center">
-				<el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
-					<i class="el-icon-upload"></i>
-					<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-					<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-				</el-upload>
-			</div>
-		</el-dialog>
-		<!-- 预览图片 -->
-		<el-dialog :visible.sync="previewModel" width="80vw">
-			<div style="margin: -60px -20px -30px -20px;">
-				<!-- <img :src="previewUrl" class="w-100"></div> -->
-				<img src="../../assets/demo/datapic/3.jpg" class="w-100"></div>
-		</el-dialog>
-	</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button @click="hide">取 消</el-button>
+			<el-button type="primary" @click="confirm">确 定</el-button>
+		</div>
+	</el-dialog>
 </template>
 
 <script>
 	import albumItem from "@/components/image/album-item.vue"
 	export default {
+		props:{
+			max:{
+				type:Number,
+				default:9
+			}
+		},
 		components: {
 			albumItem
 		},
 		data() {
 			return {
+				imageModel: false,
+				callback: false,
 				searchForm: { //修改|创建 内容
 					order: "",
 					keyword: ""
 				},
 				albumIndex: 0, //当前选中的是那个相册
-				albumModel: false, //修改|创建相册是否显示
-
-				albumEditIndex: -1, //修改的是第几个
 				albums: [],
-				albumForm: {
-					name: "",
-					order: 0,
-				},
-				uploadModel: false, //上传图片是否显示
-				imageList: [],
-				previewModel: false, //图片预览是否显示
-				previewUrl: "", //预览的图片
+				imageList: [],  //图片数据模块
 				chooseList: [], //选中的数据
-				currentPage: 0, //分页
-			}
-		},
-		computed: {
-			albumModelTitle() {
-				return this.albumEditIndex > -1 ? "修改相册" : "创建相册"
+				currentPage: 1, //分页
 			}
 		},
 		created() {
@@ -149,13 +110,32 @@
 				}
 				for (let j = 0; j < 30; j++) {
 					this.imageList.push({
-						url: "",
+						url: "@/src/assets/demo/1.jpg",
 						name: "图片" + j,
 						isCheck: false,
 						checkOrder: 0,
 						id: j,
 					})
 				}
+			},
+			// 打开弹出层
+			chooseImage(callback) {
+				this.unChoose();
+				this.callback = callback;
+				this.imageModel = true;
+			},
+			// 定点确定
+			confirm() {
+				// 选中的图片
+				if (typeof this.callback === 'function') {
+					this.callback(this.chooseList);
+					this.hide();
+				}
+			},
+			// 关闭弹窗层
+			hide() {
+				this.imageModel = false;
+				this.callback = false;
 			},
 			// 切换相册
 			albumsChange(index) {
@@ -179,60 +159,6 @@
 						message: '已取消删除'
 					});
 				});
-			},
-			// 打开相册修改|创建框
-			openAlbumModel(obj) {
-				if (obj) { // 修改
-					let {
-						item,
-						index
-					} = obj;
-					// 初始化表单
-					this.albumForm.name = item.name;
-					this.albumForm.order = item.order;
-					this.albumEditIndex = index;
-				} else { // 创建
-					this.albumForm = {
-						name: "",
-						order: 0
-					}
-					this.albumEditIndex = -1;
-				}
-				// 打开模态框
-				return this.albumModel = true;
-			},
-			// 点击确定修改|创建相册
-			confirmAlbumModel() {
-				// 判断是否位修改
-				if (this.albumEditIndex > -1) {
-					this.alibumEdit();
-				} else { //创建
-					this.albums.push({
-						name: this.albumForm.name,
-						order: this.albumForm.order,
-						num: 0
-					})
-					this.$message({
-						type: 'success',
-						message: '创建相册成功!'
-					});
-				}
-				return this.albumModel = false;
-				// 
-			},
-			// 修改相册
-			alibumEdit() {
-				this.albums[this.albumEditIndex].name = this.albumForm.name;
-				this.albums[this.albumEditIndex].order = this.albumForm.order;
-				this.$message({
-					type: 'success',
-					message: '修改相册成功!'
-				});
-			},
-			//预览图片
-			previewImage(item) {
-				this.previewUrl = item.url;
-				this.previewModel = true;
 			},
 			// 修改图片名称
 			editImage(item) {
@@ -284,7 +210,12 @@
 			},
 			// 选中图片
 			choose(item) {
+				// 选中
 				if (!item.isCheck) {
+					// 限制选中数量
+					if(this.chooseList.length >= this.max){
+						return this.$message({message:'最多选中'+this.max+'张图片',type:'warning'})
+					}
 					// 加入选中列表
 					this.chooseList.push({
 						id: item.id,
@@ -319,16 +250,16 @@
 				item.checkOrder = 0
 			},
 			// 取消选中
-			unChoose(){
-				this.imageList.forEach(v=>{
+			unChoose() {
+				this.imageList.forEach(v => {
 					// 找到所以的选中的图片
-					let i = this.chooseList.findIndex(item=>item.id === v.id);
-					if(i > -1){
+					let i = this.chooseList.findIndex(item => item.id === v.id);
+					if (i > -1) {
 						// 取消选中样式，排序归0
 						v.isCheck = false;
 						v.checkOrder = 0;
 						// 从chooseList中移除
-						this.chooseList.splice(i,1)
+						this.chooseList.splice(i, 1)
 					}
 				})
 			},
@@ -339,14 +270,9 @@
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
 			}
-		},
+		}
 	}
 </script>
 
 <style>
-	.sum-active {
-		color: #67C23A !important;
-		background-color: #f0f9eb !important;
-		border-color: #c2e7b0 !important;
-	}
 </style>
